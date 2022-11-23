@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>GENGAR</title>
+	<style type="text/css">
+		body{
+			margin:0;
+
+		}
+		canvas{
+			display: block;
+		}
+	</style>
+	<link rel="stylesheet" href="">
+</head>
+<body>
+	
+
+	<script type="importmap">
+        {
+            "imports": {
+                "three": "./three/three.module.js",
+                "GLTFLoader": "./three/GLTFLoader.js",
+                "OrbitControls": "./three/OrbitControls.js"
+            }
+        }
+    </script>
+	<script type="module">
+		import * as THREE from 'three';
+		import { OrbitControls } from 'OrbitControls';
+		import {GLTFLoader} from 'GLTFLoader';
+		
+		var scene = new THREE.Scene();
+		var camera = new THREE.PerspectiveCamera(
+			75,
+			window.innerWidth / window.innerHeight,
+			0.01,
+			1000
+		);
+
+
+		var renderer = new THREE.WebGLRenderer();
+		renderer.setSize(window.innerWidth, window.innerHeight);
+		document.body.appendChild(renderer.domElement);
+
+		var pokemon;
+
+		var loader = new GLTFLoader();
+		loader.load("gen.glb", function(gltf){
+			pokemon = gltf.scene;
+			var gengar = gltf.scene;
+			gengar.scale.set(4,4,4);
+			scene.add(gengar);
+		},
+		// called while loading is progressing
+		function (xhr) {
+			console.log((xhr.loaded / xhr.total) * 100 + '% loaded');
+		},
+		// called when loading has errors
+		function (error) {
+		console.log('An error happened');
+		}
+		);
+
+		var light1 = new THREE.PointLight(0x532f99, 0.5);
+		light1.position.set(0,10,50);
+		var light2 = new THREE.PointLight(0x532f99, 1);
+		light2.position.set(0,-10,-50);
+		var light3 = new THREE.PointLight(0xffffff, .3);
+		light3.position.set(300,0,0);
+		
+		scene.add(light1, light2,light3);
+		camera.position.set(0,20, 30);
+
+		scene.background = new THREE.Color(0x532f99);
+
+		var controls = new OrbitControls(camera, renderer.domElement);
+
+		function animate(){
+			requestAnimationFrame(animate);
+
+			pokemon.rotation.y += 0.007;
+
+			controls.update();
+
+			renderer.render(scene, camera);
+
+		}
+		animate();
+	</script>
+</body>
+</html>
